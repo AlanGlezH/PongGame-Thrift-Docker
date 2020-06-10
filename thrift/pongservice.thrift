@@ -1,0 +1,3 @@
+service PongService{
+    string Welcome()
+}
