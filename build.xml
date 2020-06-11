@@ -23,7 +23,7 @@
   </target>
 
    <target name="runservidor">
-      <java classname="ServerPong" classpath="./thrift/libthrift-0.13.0.jar:./thrift/slf4j-api-1.7.30.jar:./thrift/slf4j-nop-1.7.30.jar:./thrift/gen-java:./server:."/>
+      <java classname="ServerPong" classpath="./thrift/libthrift-0.13.0.jar:./thrift/slf4j-api-1.7.30.jar:./thrift/slf4j-nop-1.7.30.jar:./gen-java:./server:."/>
    </target>
    
    <target name="all" depends="clean,compile"/>

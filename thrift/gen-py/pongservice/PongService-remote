@@ -24,8 +24,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
     print('')
     print('Functions:')
-    print('  string Welcome()')
-    print('  bool InitGame()')
+    print('  bool StartGame()')
+    print('  i32 JoinGame()')
     print('')
     sys.exit(0)
 
@@ -105,17 +105,17 @@ protocol = TBinaryProtocol(transport)
 client = PongService.Client(protocol)
 transport.open()
 
-if cmd == 'Welcome':
+if cmd == 'StartGame':
     if len(args) != 0:
-        print('Welcome requires 0 args')
+        print('StartGame requires 0 args')
         sys.exit(1)
-    pp.pprint(client.Welcome())
+    pp.pprint(client.StartGame())
 
-elif cmd == 'InitGame':
+elif cmd == 'JoinGame':
     if len(args) != 0:
-        print('InitGame requires 0 args')
+        print('JoinGame requires 0 args')
         sys.exit(1)
-    pp.pprint(client.InitGame())
+    pp.pprint(client.JoinGame())
 
 else:
     print('Unrecognized method %s' % cmd)
