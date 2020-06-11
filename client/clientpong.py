@@ -23,6 +23,11 @@ try:
 except NotPlaceAvaibleException as e:
     print(e.message)
 
+if client.StartGame() == True:
+    print("Game inited")
+else:
+    print("Not game inited")
+
 
 
 transport.close()

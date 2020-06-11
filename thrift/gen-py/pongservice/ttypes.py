@@ -96,6 +96,86 @@ class Player(object):
         return not (self == other)
 
 
+class Ball(object):
+    """
+    Attributes:
+     - position
+     - speedOnY
+     - speedOnX
+
+    """
+
+
+    def __init__(self, position=None, speedOnY=None, speedOnX=None,):
+        self.position = position
+        self.speedOnY = speedOnY
+        self.speedOnX = speedOnX
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRUCT:
+                    self.position = Position()
+                    self.position.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.I32:
+                    self.speedOnY = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.I32:
+                    self.speedOnX = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('Ball')
+        if self.position is not None:
+            oprot.writeFieldBegin('position', TType.STRUCT, 1)
+            self.position.write(oprot)
+            oprot.writeFieldEnd()
+        if self.speedOnY is not None:
+            oprot.writeFieldBegin('speedOnY', TType.I32, 2)
+            oprot.writeI32(self.speedOnY)
+            oprot.writeFieldEnd()
+        if self.speedOnX is not None:
+            oprot.writeFieldBegin('speedOnX', TType.I32, 3)
+            oprot.writeI32(self.speedOnX)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
 class Position(object):
     """
     Attributes:
@@ -288,6 +368,13 @@ Player.thrift_spec = (
     (1, TType.I32, 'IdPlayer', None, None, ),  # 1
     (2, TType.STRUCT, 'position', [Position, None], None, ),  # 2
     (3, TType.I32, 'score', None, None, ),  # 3
+)
+all_structs.append(Ball)
+Ball.thrift_spec = (
+    None,  # 0
+    (1, TType.STRUCT, 'position', [Position, None], None, ),  # 1
+    (2, TType.I32, 'speedOnY', None, None, ),  # 2
+    (3, TType.I32, 'speedOnX', None, None, ),  # 3
 )
 all_structs.append(Position)
 Position.thrift_spec = (

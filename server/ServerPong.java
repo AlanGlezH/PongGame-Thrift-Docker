@@ -9,7 +9,7 @@ import org.apache.thrift.transport.TNonblockingServerSocket;
 public class ServerPong {
     public static void main(String[] args) throws TTransportException {
 
-        TNonblockingServerSocket transporte = new  TNonblockingServerSocket(9090);
+        TServerSocket transporte = new  TServerSocket(9090);
 
         ServicePongHandler servicePongHandler = new ServicePongHandler();
         TProcessor procesor = new PongService.Processor<>(servicePongHandler);
@@ -20,10 +20,7 @@ public class ServerPong {
             public void run() {
                 while (true) {
                     try {
-                        if(servicePongHandler.playerList.size() > 1){
-                            System.out.println("Ups juego lleno");
-                        }
-                       
+                        
                     } catch (Exception e) {
                         e.printStackTrace();
                         

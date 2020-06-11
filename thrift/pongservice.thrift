@@ -4,6 +4,11 @@ struct Player{
     3: i32 score;
 }
 
+struct Ball{
+    1: Position position;
+    2: i32 speedOnY;
+    3: i32 speedOnX;
+}
 struct Position{
     1: i32 X;
     2: i32 Y;
