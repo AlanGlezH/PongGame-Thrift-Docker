@@ -25,6 +25,28 @@ class Iface(object):
     def JoinGame(self):
         pass
 
+    def GetEnemyPosition(self, idPlayer):
+        """
+        Parameters:
+         - idPlayer
+
+        """
+        pass
+
+    def UpdatePosition(self, player):
+        """
+        Parameters:
+         - player
+
+        """
+        pass
+
+    def GetBallPosition(self):
+        pass
+
+    def GetScore(self):
+        pass
+
 
 class Client(Iface):
     def __init__(self, iprot, oprot=None):
@@ -87,6 +109,120 @@ class Client(Iface):
             raise result.ex
         raise TApplicationException(TApplicationException.MISSING_RESULT, "JoinGame failed: unknown result")
 
+    def GetEnemyPosition(self, idPlayer):
+        """
+        Parameters:
+         - idPlayer
+
+        """
+        self.send_GetEnemyPosition(idPlayer)
+        return self.recv_GetEnemyPosition()
+
+    def send_GetEnemyPosition(self, idPlayer):
+        self._oprot.writeMessageBegin('GetEnemyPosition', TMessageType.CALL, self._seqid)
+        args = GetEnemyPosition_args()
+        args.idPlayer = idPlayer
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_GetEnemyPosition(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = GetEnemyPosition_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "GetEnemyPosition failed: unknown result")
+
+    def UpdatePosition(self, player):
+        """
+        Parameters:
+         - player
+
+        """
+        self.send_UpdatePosition(player)
+        self.recv_UpdatePosition()
+
+    def send_UpdatePosition(self, player):
+        self._oprot.writeMessageBegin('UpdatePosition', TMessageType.CALL, self._seqid)
+        args = UpdatePosition_args()
+        args.player = player
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_UpdatePosition(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = UpdatePosition_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        return
+
+    def GetBallPosition(self):
+        self.send_GetBallPosition()
+        return self.recv_GetBallPosition()
+
+    def send_GetBallPosition(self):
+        self._oprot.writeMessageBegin('GetBallPosition', TMessageType.CALL, self._seqid)
+        args = GetBallPosition_args()
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_GetBallPosition(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = GetBallPosition_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "GetBallPosition failed: unknown result")
+
+    def GetScore(self):
+        self.send_GetScore()
+        return self.recv_GetScore()
+
+    def send_GetScore(self):
+        self._oprot.writeMessageBegin('GetScore', TMessageType.CALL, self._seqid)
+        args = GetScore_args()
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_GetScore(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = GetScore_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "GetScore failed: unknown result")
+
 
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
@@ -94,6 +230,10 @@ class Processor(Iface, TProcessor):
         self._processMap = {}
         self._processMap["StartGame"] = Processor.process_StartGame
         self._processMap["JoinGame"] = Processor.process_JoinGame
+        self._processMap["GetEnemyPosition"] = Processor.process_GetEnemyPosition
+        self._processMap["UpdatePosition"] = Processor.process_UpdatePosition
+        self._processMap["GetBallPosition"] = Processor.process_GetBallPosition
+        self._processMap["GetScore"] = Processor.process_GetScore
         self._on_message_begin = None
 
     def on_message_begin(self, func):
@@ -161,6 +301,98 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("JoinGame", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_GetEnemyPosition(self, seqid, iprot, oprot):
+        args = GetEnemyPosition_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = GetEnemyPosition_result()
+        try:
+            result.success = self._handler.GetEnemyPosition(args.idPlayer)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("GetEnemyPosition", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_UpdatePosition(self, seqid, iprot, oprot):
+        args = UpdatePosition_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = UpdatePosition_result()
+        try:
+            self._handler.UpdatePosition(args.player)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("UpdatePosition", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_GetBallPosition(self, seqid, iprot, oprot):
+        args = GetBallPosition_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = GetBallPosition_result()
+        try:
+            result.success = self._handler.GetBallPosition()
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("GetBallPosition", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_GetScore(self, seqid, iprot, oprot):
+        args = GetScore_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = GetScore_result()
+        try:
+            result.success = self._handler.GetScore()
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("GetScore", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -386,6 +618,453 @@ all_structs.append(JoinGame_result)
 JoinGame_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
     (1, TType.STRUCT, 'ex', [NotPlaceAvaibleException, None], None, ),  # 1
+)
+
+
+class GetEnemyPosition_args(object):
+    """
+    Attributes:
+     - idPlayer
+
+    """
+
+
+    def __init__(self, idPlayer=None,):
+        self.idPlayer = idPlayer
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.I32:
+                    self.idPlayer = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetEnemyPosition_args')
+        if self.idPlayer is not None:
+            oprot.writeFieldBegin('idPlayer', TType.I32, 1)
+            oprot.writeI32(self.idPlayer)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetEnemyPosition_args)
+GetEnemyPosition_args.thrift_spec = (
+    None,  # 0
+    (1, TType.I32, 'idPlayer', None, None, ),  # 1
+)
+
+
+class GetEnemyPosition_result(object):
+    """
+    Attributes:
+     - success
+
+    """
+
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.STRUCT:
+                    self.success = Position()
+                    self.success.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetEnemyPosition_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.STRUCT, 0)
+            self.success.write(oprot)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetEnemyPosition_result)
+GetEnemyPosition_result.thrift_spec = (
+    (0, TType.STRUCT, 'success', [Position, None], None, ),  # 0
+)
+
+
+class UpdatePosition_args(object):
+    """
+    Attributes:
+     - player
+
+    """
+
+
+    def __init__(self, player=None,):
+        self.player = player
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRUCT:
+                    self.player = Player()
+                    self.player.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('UpdatePosition_args')
+        if self.player is not None:
+            oprot.writeFieldBegin('player', TType.STRUCT, 1)
+            self.player.write(oprot)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(UpdatePosition_args)
+UpdatePosition_args.thrift_spec = (
+    None,  # 0
+    (1, TType.STRUCT, 'player', [Player, None], None, ),  # 1
+)
+
+
+class UpdatePosition_result(object):
+
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('UpdatePosition_result')
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(UpdatePosition_result)
+UpdatePosition_result.thrift_spec = (
+)
+
+
+class GetBallPosition_args(object):
+
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetBallPosition_args')
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetBallPosition_args)
+GetBallPosition_args.thrift_spec = (
+)
+
+
+class GetBallPosition_result(object):
+    """
+    Attributes:
+     - success
+
+    """
+
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.STRUCT:
+                    self.success = Position()
+                    self.success.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetBallPosition_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.STRUCT, 0)
+            self.success.write(oprot)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetBallPosition_result)
+GetBallPosition_result.thrift_spec = (
+    (0, TType.STRUCT, 'success', [Position, None], None, ),  # 0
+)
+
+
+class GetScore_args(object):
+
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetScore_args')
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetScore_args)
+GetScore_args.thrift_spec = (
+)
+
+
+class GetScore_result(object):
+    """
+    Attributes:
+     - success
+
+    """
+
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.LIST:
+                    self.success = []
+                    (_etype3, _size0) = iprot.readListBegin()
+                    for _i4 in range(_size0):
+                        _elem5 = iprot.readI32()
+                        self.success.append(_elem5)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('GetScore_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.LIST, 0)
+            oprot.writeListBegin(TType.I32, len(self.success))
+            for iter6 in self.success:
+                oprot.writeI32(iter6)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(GetScore_result)
+GetScore_result.thrift_spec = (
+    (0, TType.LIST, 'success', (TType.I32, None, False), None, ),  # 0
 )
 fix_spec(all_structs)
 del all_structs

@@ -24,11 +24,11 @@ exception NotPlaceAvaibleException{
 service PongService{
     bool StartGame()
     i32 JoinGame() throws (1:NotPlaceAvaibleException ex)
-    // Player GetEnemyPosition()
-    // void UpdatePosition(1:Player player) 
-    // Position GetBallPosition()
+    Position GetEnemyPosition(1: i32 idPlayer)
+    void UpdatePosition(1:Player player) 
+    Position GetBallPosition()
     // void HittingBall()
-    // list<i32> GetScore()
+    list<i32> GetScore()
 
 }
 
