@@ -30,6 +30,8 @@ service PongService{
     Position GetBallPosition()
     void HittingBall(1: i32 idPlayer)
     list<i32> GetScore()
+    i32 GetPlayerWinner()
+    void ExitGame(1: i32 idPlayer)
 
 }
 

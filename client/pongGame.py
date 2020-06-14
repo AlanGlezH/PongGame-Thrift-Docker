@@ -1,12 +1,6 @@
 import pygame
 from connection import Connection, Player, Position
-
-# class Player:
-# 	def __init__(self, pos_x, pos_y, speed, forme=None):
-# 		self.position_X = pos_x
-# 		self.position_Y = pos_y
-# 		self.speed = speed
-# 		self.form = forme
+import time
 
 class Ball:
 	def __init__(self):
@@ -23,6 +17,10 @@ def mainGame(conn: Connection, idclient: int):
 	PLAYER_PADDLE_HEIGHT = 90
 	screen = pygame.display.set_mode(SCREEN_SIZE)
 	clock = pygame.time.Clock()
+	# fuente de letra
+	font = pygame.font.Font(None, 30)
+	pygame.display.set_caption("PongGame Distribuido")
+	
 	#Instancia del jugador 1
 	if idclient == 1:
 		playerOne = Player(idclient,Position(50,255),0,0)
@@ -34,12 +32,16 @@ def mainGame(conn: Connection, idclient: int):
 	# Coordenadas de la pelota
 	ball = Ball()
 	game_over = False
-
+	idWinner = -1
 
 	while not game_over:
+		#Validar ganador
+		idWinner = conn.client.GetPlayerWinner()
+
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game_over = True
+				conn.client.ExitGame(idclient)
 			
 			if event.type == pygame.KEYDOWN:
 				# Jugador 1
@@ -89,16 +91,32 @@ def mainGame(conn: Connection, idclient: int):
 
 		screen.fill(BLACK)
 		#Zona de dibujo
-		jugador1 = pygame.draw.rect(screen, WHITE, (playerOne.position.X, playerOne.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
-		jugador2 = pygame.draw.rect(screen, WHITE, (playerTwo.position.X, playerTwo.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
-		pelota = pygame.draw.circle(screen, WHITE, (ball.position_X, ball.position_Y), 10)
-		# # Colisiones
-		# if pelota.colliderect(jugador1) or pelota.colliderect(jugador2):
-		# 	ball.speed_X *= -1
+		paddle_playerOne = pygame.draw.rect(screen, WHITE, (playerOne.position.X, playerOne.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
+		paddle_playerTwo = pygame.draw.rect(screen, WHITE, (playerTwo.position.X, playerTwo.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
+		ball_draw = pygame.draw.circle(screen, WHITE, (ball.position_X, ball.position_Y), 10)
+		# retorna el rectángulo de la pantalla
+		screen_rect = screen.get_rect()
+		# convierte un texto en un objeto 'Surface'
+		score = conn.client.GetScore()
+		score_text = "Jugador 1: {0}            Jugador 2: {1}".format(score[0],score[1])
+		text_surface = font.render(score_text, True, WHITE)
+		screen.blit(text_surface, (250,10))
+	
+		# Colisiones
+		if idclient == 1:
+			if ball_draw.colliderect(paddle_playerOne):
+				conn.client.HittingBall(idclient)
+		else:
+			if ball_draw.colliderect(paddle_playerTwo):
+				conn.client.HittingBall(idclient)
+				
+		if idWinner != -1:
+			game_over = True
+
+
 		pygame.display.flip()
 		clock.tick(60)
 	pygame.quit()
 
+	return idWinner
 
-# if __name__ == "__main__":
-# 	main()

@@ -14,11 +14,8 @@ public class ServerPong {
         ServicePongHandler servicePongHandler = new ServicePongHandler();
         TProcessor procesor = new PongService.Processor<>(servicePongHandler);
         TServer servidor = new TThreadPoolServer(new TThreadPoolServer.Args(transporte).processor(procesor));
-
-
-        
-        
-        
+    
+            
         servidor.serve();
 
  

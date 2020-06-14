@@ -45,7 +45,11 @@ if __name__ == "__main__":
                 print ("Esperando a un contrincante ...")
                 time.sleep(2)
 
-            mainGame(conn, client)
+            idWinner = mainGame(conn, client)
+            if idWinner == client:
+                print("Felicidades has ganado")
+            else:
+                print("Perdiste")
         else:
             print("No hay un juego disponible :c")
     elif command == 'S':

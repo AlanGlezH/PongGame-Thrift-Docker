@@ -15,6 +15,7 @@ public class ServicePongHandler implements PongService.Iface {
   private final String LEFT_ORIENTATION = "LEFT";
   public static Ball ballGame;
   public static String orientationBall;
+  public static int idPlayerWinner = -1;
   Thread threadBallMovement = new Thread(new Runnable() {
     @Override
     public void run() {
@@ -26,25 +27,43 @@ public class ServicePongHandler implements PongService.Iface {
 
           if(isBallOnRightLimitX()){
             InvertBallPosition();
+            AddScore(0);
           }
 
           if(isBallOnLeftLimitX()){
             InvertBallPosition();
+            AddScore(1);
 
           }
           ballGame.getPosition().setX(ballGame.getPosition().getX() + ballGame.getSpeedOnX());
           ballGame.getPosition().setY(ballGame.getPosition().getY() + ballGame.getSpeedOnY());
-          System.out.println("Posicion actualizada.");
           Thread.sleep(10);
         } catch (Exception e) {
           e.printStackTrace();
 
         }
       }
+      System.out.println("Juego terminado, ganador Player:" + idPlayerWinner);
     }
     
 
   });
+
+  public void AddScore(int idPlayer){
+    playerList.get(idPlayer).setScore(playerList.get(idPlayer).getScore() + 1);
+    if(isPlayerWinner(idPlayer)){
+      isGameRunning = false;
+      idPlayerWinner = idPlayer;
+    }
+  }
+
+  public boolean isPlayerWinner(int idPlayer){
+    if(playerList.get(idPlayer).getScore() == 5){
+      return true;
+    }else{
+      return false;
+    }
+  }
 
   public boolean isBallOnLeftLimitX(){
     boolean result = false;
@@ -134,7 +153,6 @@ public class ServicePongHandler implements PongService.Iface {
     }
     newPlayer.setPosition(position);
     playerList.add(newPlayer);
-    System.out.println("New player: " + newPlayer.IdPlayer);
 
     return newPlayer.IdPlayer;
   }
@@ -147,8 +165,6 @@ public class ServicePongHandler implements PongService.Iface {
 
   @Override
   public void UpdatePosition(Player player) throws TException {
-    System.out.println("Posicion jugador ID[" + player.getIdPlayer() + "] " + "X[" + player.getPosition().getX() + "]-"
-        + "[Y" + player.getPosition().getY() + "]");
 
     playerList.get(player.getIdPlayer() - 1).setPosition(player.getPosition());
 
@@ -162,28 +178,36 @@ public class ServicePongHandler implements PongService.Iface {
 
   @Override
   public List<Integer> GetScore() throws TException {
-    System.out.println("Score entrando");
-    int scorePlayerOne = playerList.get(0).getScore();
-    System.out.println("Score entrando" + playerList.get(1).getScore());
-    int scorePlayerTwo = playerList.get(1).getScore();
-    List<Integer> arrayScore = new ArrayList<Integer>();
-    arrayScore.add(scorePlayerOne);
-    arrayScore.add(scorePlayerTwo);
-    System.out.println("Score saliendo");
-
-    return arrayScore;
+    return new ArrayList<Integer>(List.of(playerList.get(0).getScore(), playerList.get(1).getScore()));
   }
-
-}
 
   @Override
   public void HittingBall(int idPlayer) throws TException {
-
+    ballGame.setSpeedOnX(ballGame.getSpeedOnX() * -1);
 
   }
 
-// @Override
-// public ArrayList<int> GetScore() throws TException {
+  @Override
+  public int GetPlayerWinner() throws TException{
+    return idPlayerWinner;
+  }
 
-// return new ArrayList<int>();
-// }
+  @Override
+  public void ExitGame(int idPlayer) throws TException{
+    if(idPlayer == 1){
+      idPlayerWinner = 2;
+    }else {
+      idPlayerWinner = 1;
+    }
+    isGameRunning = false;
+  }
+
+ 
+
+
+
+}
+
+  
+
+

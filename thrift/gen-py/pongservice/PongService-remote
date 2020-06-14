@@ -31,6 +31,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('  Position GetBallPosition()')
     print('  void HittingBall(i32 idPlayer)')
     print('   GetScore()')
+    print('  i32 GetPlayerWinner()')
+    print('  void ExitGame(i32 idPlayer)')
     print('')
     sys.exit(0)
 
@@ -151,6 +153,18 @@ elif cmd == 'GetScore':
         print('GetScore requires 0 args')
         sys.exit(1)
     pp.pprint(client.GetScore())
+
+elif cmd == 'GetPlayerWinner':
+    if len(args) != 0:
+        print('GetPlayerWinner requires 0 args')
+        sys.exit(1)
+    pp.pprint(client.GetPlayerWinner())
+
+elif cmd == 'ExitGame':
+    if len(args) != 1:
+        print('ExitGame requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.ExitGame(eval(args[0]),))
 
 else:
     print('Unrecognized method %s' % cmd)
