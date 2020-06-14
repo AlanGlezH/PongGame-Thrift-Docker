@@ -15,19 +15,6 @@ public class ServerPong {
         TProcessor procesor = new PongService.Processor<>(servicePongHandler);
         TServer servidor = new TThreadPoolServer(new TThreadPoolServer.Args(transporte).processor(procesor));
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        
-                    }
-                }
-            }
-        });
 
         
         

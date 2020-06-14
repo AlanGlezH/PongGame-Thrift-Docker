@@ -21,14 +21,16 @@ class Player(object):
     Attributes:
      - IdPlayer
      - position
+     - speed
      - score
 
     """
 
 
-    def __init__(self, IdPlayer=None, position=None, score=None,):
+    def __init__(self, IdPlayer=None, position=None, speed=None, score=None,):
         self.IdPlayer = IdPlayer
         self.position = position
+        self.speed = speed
         self.score = score
 
     def read(self, iprot):
@@ -53,6 +55,11 @@ class Player(object):
                     iprot.skip(ftype)
             elif fid == 3:
                 if ftype == TType.I32:
+                    self.speed = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 4:
+                if ftype == TType.I32:
                     self.score = iprot.readI32()
                 else:
                     iprot.skip(ftype)
@@ -74,8 +81,12 @@ class Player(object):
             oprot.writeFieldBegin('position', TType.STRUCT, 2)
             self.position.write(oprot)
             oprot.writeFieldEnd()
+        if self.speed is not None:
+            oprot.writeFieldBegin('speed', TType.I32, 3)
+            oprot.writeI32(self.speed)
+            oprot.writeFieldEnd()
         if self.score is not None:
-            oprot.writeFieldBegin('score', TType.I32, 3)
+            oprot.writeFieldBegin('score', TType.I32, 4)
             oprot.writeI32(self.score)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
@@ -367,7 +378,8 @@ Player.thrift_spec = (
     None,  # 0
     (1, TType.I32, 'IdPlayer', None, None, ),  # 1
     (2, TType.STRUCT, 'position', [Position, None], None, ),  # 2
-    (3, TType.I32, 'score', None, None, ),  # 3
+    (3, TType.I32, 'speed', None, None, ),  # 3
+    (4, TType.I32, 'score', None, None, ),  # 4
 )
 all_structs.append(Ball)
 Ball.thrift_spec = (

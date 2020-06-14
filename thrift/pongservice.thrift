@@ -1,7 +1,8 @@
 struct Player{
     1: i32 IdPlayer;
     2: Position position;
-    3: i32 score;
+    3: i32 speed;
+    4: i32 score;
 }
 
 struct Ball{
@@ -27,7 +28,7 @@ service PongService{
     Position GetEnemyPosition(1: i32 idPlayer)
     void UpdatePosition(1:Player player) 
     Position GetBallPosition()
-    // void HittingBall()
+    void HittingBall(1: i32 idPlayer)
     list<i32> GetScore()
 
 }

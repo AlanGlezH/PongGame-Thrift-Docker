@@ -1,170 +1,104 @@
 import pygame
+from connection import Connection, Player, Position
 
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-SCREEN_SIZE = (800, 600)
-
-class Game:
-	def __init__(self):
-		self.game_over = False
-		self.player_width = 15
-		self.player_height = 90
-		self.playerOne = Player(50,255,0)
-		self.playerTwo = Player(735,255,0)
-		self.ball = Ball()
-
-	def process_events(self):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				return True
-			
-		return False
-
-	def display_window(self, screen):
-		screen.fill(BLACK)
-		self.playerOne.form = pygame.draw.rect(screen, WHITE, (self.playerOne.position_X, self.playerOne.position_X, self.player_width, self.player_height))
-		self.playerTwo.form = pygame.draw.rect(screen, WHITE, (self.playerTwo.position_X, self.playerTwo.position_X, self.player_width, self.player_height))
-		self.ball = pygame.draw.circle(screen, WHITE, (self.ball.position_X, self.ball.position_Y), 10)
-		pygame.display.flip()
-
-
-class Player:
-	def __init__(self, pos_x, pos_y, speed):
-		self.position_X
-		self.position_Y
-		self.speed
-		self.form
-
+# class Player:
+# 	def __init__(self, pos_x, pos_y, speed, forme=None):
+# 		self.position_X = pos_x
+# 		self.position_Y = pos_y
+# 		self.speed = speed
+# 		self.form = forme
 
 class Ball:
 	def __init__(self):
 		self.position_X = 400
 		self.position_Y = 300
-		self.speed_X = 3
-		self.speed_Y = 3
-		self.form
 
-
-
-
-def main():
+def mainGame(conn: Connection, idclient: int):
 	pygame.init()
-
 	#Colores
-	black = (0, 0, 0)
-	white = (255, 255, 255)
-	screen_size = (800, 600)
-	player_width = 15
-	player_height = 90
-
-	screen = pygame.display.set_mode(screen_size)
+	WHITE = (255, 255, 255)
+	BLACK = (0, 0, 0)
+	SCREEN_SIZE = (800, 600)
+	PLAYER_PADDLE_WIDTH = 15
+	PLAYER_PADDLE_HEIGHT = 90
+	screen = pygame.display.set_mode(SCREEN_SIZE)
 	clock = pygame.time.Clock()
+	#Instancia del jugador 1
+	if idclient == 1:
+		playerOne = Player(idclient,Position(50,255),0,0)
+		playerTwo = Player(2,Position(700,255),0,0)
 
-	#Coordenadas y velocidad del jugador 1
-	player1_x_coor = 50
-	player1_y_coor = 300 - 45
-	player1_y_speed = 0
-
-	#Coordenadas y velocidad del jugador 2
-	player2_x_coor = 750 - player_width
-	player2_y_coor = 300 - 45
-	player2_y_speed = 0
-
+	else:
+		playerOne = Player(1,Position(50,255),0,0)
+		playerTwo = Player(idclient,Position(700,255),0,0)
 	# Coordenadas de la pelota
-	pelota_x = 400
-	pelota_y = 300
-	pelota_speed_x = 3
-	pelota_speed_y = 3
-
+	ball = Ball()
 	game_over = False
+
 
 	while not game_over:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game_over = True
-			if event.type == pygame.K_t:
-				game_over = True
-
+			
 			if event.type == pygame.KEYDOWN:
 				# Jugador 1
-				if event.key == pygame.K_w:
-					player1_y_speed = -3
-				if event.key == pygame.K_s:
-					player1_y_speed = 3
-				# Jugador 2
 				if event.key == pygame.K_UP:
-					player2_y_speed = -3
+					if idclient == 1:
+						playerOne.speed = -3
+					else:
+						playerTwo.speed = -3
+
 				if event.key == pygame.K_DOWN:
-					player2_y_speed = 3
+					if idclient == 1:
+						playerOne.speed = 3
+					else:
+						playerTwo.speed = 3
 
 			if event.type == pygame.KEYUP:
 				# Jugador 1
-				if event.key == pygame.K_w:
-					player1_y_speed = 0
-				if event.key == pygame.K_s:
-					player1_y_speed = 0
-				# Jugador 2
 				if event.key == pygame.K_UP:
-					player2_y_speed = 0
+					if idclient == 1:
+						playerOne.speed = 0
+					else:
+						playerTwo.speed = 0
+
 				if event.key == pygame.K_DOWN:
-					player2_y_speed = 0
-
-		if pelota_y > 590 or pelota_y < 10:
-			pelota_speed_y *= -1
-
-		# Revisa si la pelota sale del lado derecho
-		if pelota_x > 800:
-			pelota_x = 400
-			pelota_y = 300
-			# Si sale de la pantalla, invierte direccion
-			pelota_speed_x *= -1
-			pelota_speed_y *= -1
-
-		# Revisa si la pelota sale del lado izquierdo
-		if pelota_x < 0:
-			pelota_x = 400
-			pelota_y = 300
-			# Si sale de la pantalla, invierte direccion
-			pelota_speed_x *= -1
-			pelota_speed_y *= -1
+					if idclient == 1:
+						playerOne.speed = 0
+					else:
+						playerTwo.speed = 0
 
 
-		# Modifica las coordenadas para dar mov. a los jugadores/ pelota
-		player1_y_coor += player1_y_speed
-		player2_y_coor += player2_y_speed
+		# Modifica las coordenadas para dar mov. a los jugadores
+		if idclient == 1:
+			playerOne.position.Y += playerOne.speed
+			conn.client.UpdatePosition(playerOne)
+			posEnemy = conn.client.GetEnemyPosition(2)
+			playerTwo.position.Y = posEnemy.Y
+		else:
+			playerTwo.position.Y += playerTwo.speed
+			conn.client.UpdatePosition(playerTwo)
+			posEnemy = conn.client.GetEnemyPosition(1)
+			playerOne.position.Y = posEnemy.Y
+
 		# Movimiento pelota
-		pelota_x += pelota_speed_x
-		pelota_y += pelota_speed_y
+		position = conn.client.GetBallPosition()
+		ball.position_X = position.X
+		ball.position_Y = position.Y
 
-		screen.fill(black)
+		screen.fill(BLACK)
 		#Zona de dibujo
-		jugador1 = pygame.draw.rect(screen, white, (player1_x_coor, player1_y_coor, player_width, player_height))
-		jugador2 = pygame.draw.rect(screen, white, (player2_x_coor, player2_y_coor, player_width, player_height))
-		pelota = pygame.draw.circle(screen, white, (pelota_x, pelota_y), 10)
-
-		# Colisiones
-		if pelota.colliderect(jugador1) or pelota.colliderect(jugador2):
-			pelota_speed_x *= -1
-
+		jugador1 = pygame.draw.rect(screen, WHITE, (playerOne.position.X, playerOne.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
+		jugador2 = pygame.draw.rect(screen, WHITE, (playerTwo.position.X, playerTwo.position.Y, PLAYER_PADDLE_WIDTH, PLAYER_PADDLE_HEIGHT))
+		pelota = pygame.draw.circle(screen, WHITE, (ball.position_X, ball.position_Y), 10)
+		# # Colisiones
+		# if pelota.colliderect(jugador1) or pelota.colliderect(jugador2):
+		# 	ball.speed_X *= -1
 		pygame.display.flip()
 		clock.tick(60)
 	pygame.quit()
 
 
-
-# def main():
-# 	pygame.init()
-# 	screen = pygame.display.set_mode(SCREEN_SIZE)
-# 	clock = pygame.time.Clock()
-# 	game = Game()
-# 	done = False
-# 	while not done:
-# 		done = game.process_events()
-# 		game.display_window(screen)
-# 		clock.tick(60)
-
-# 	pygame.quit()
-
-
-if __name__ == "__main__":
-	main()
+# if __name__ == "__main__":
+# 	main()
