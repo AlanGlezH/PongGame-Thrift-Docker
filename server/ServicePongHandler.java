@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import org.apache.thrift.TException;
 
@@ -53,7 +54,7 @@ public class ServicePongHandler implements PongService.Iface {
     playerList.get(idPlayer).setScore(playerList.get(idPlayer).getScore() + 1);
     if(isPlayerWinner(idPlayer)){
       isGameRunning = false;
-      idPlayerWinner = idPlayer;
+      idPlayerWinner = idPlayer+1;
     }
   }
 
@@ -144,6 +145,7 @@ public class ServicePongHandler implements PongService.Iface {
       throw ex;
     }
     Player newPlayer = new Player();
+   
     newPlayer.IdPlayer = (playerList.size() + 1);
     Position position;
     if(newPlayer.IdPlayer == 1){
@@ -159,16 +161,12 @@ public class ServicePongHandler implements PongService.Iface {
 
   @Override
   public Position GetBallPosition() throws TException {
-
     return ballGame.getPosition();
   }
 
   @Override
   public void UpdatePosition(Player player) throws TException {
-
     playerList.get(player.getIdPlayer() - 1).setPosition(player.getPosition());
-
-    
   }
 
   @Override
@@ -178,13 +176,12 @@ public class ServicePongHandler implements PongService.Iface {
 
   @Override
   public List<Integer> GetScore() throws TException {
-    return new ArrayList<Integer>(List.of(playerList.get(0).getScore(), playerList.get(1).getScore()));
+    return Arrays.asList(playerList.get(0).getScore(), playerList.get(1).getScore());
   }
 
   @Override
   public void HittingBall(int idPlayer) throws TException {
     ballGame.setSpeedOnX(ballGame.getSpeedOnX() * -1);
-
   }
 
   @Override
@@ -201,11 +198,6 @@ public class ServicePongHandler implements PongService.Iface {
     }
     isGameRunning = false;
   }
-
- 
-
-
-
 }
 
   
