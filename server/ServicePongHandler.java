@@ -50,6 +50,28 @@ public class ServicePongHandler implements PongService.Iface {
 
   });
 
+  public ServicePongHandler() {
+    ballGame = new Ball(new Position(), 0, 0);
+    playerList = new ArrayList<Player>();
+    orientationBall = RIGHT_ORIENTATION;
+    isGameRunning = false;
+  }
+
+  public void InvertBallPosition(){
+    ballGame.getPosition().setX(BALL_INITIAL_POSITION_X);
+    ballGame.getPosition().setY(BALL_INITIAL_POSITION_Y);
+    ballGame.setSpeedOnX(ballGame.getSpeedOnX() * -1);
+    ballGame.setSpeedOnY(ballGame.getSpeedOnY() * -1);
+  }
+
+  public void ResetBallPosition() {
+    ballGame.getPosition().setX(BALL_INITIAL_POSITION_X);
+    ballGame.getPosition().setY(BALL_INITIAL_POSITION_Y);
+    ballGame.setSpeedOnX(BALL_INITIAL_SPEED_X);
+    ballGame.setSpeedOnY(BALL_INITIAL_SPEED_Y);
+
+  }
+
   public void AddScore(int idPlayer){
     playerList.get(idPlayer).setScore(playerList.get(idPlayer).getScore() + 1);
     if(isPlayerWinner(idPlayer)){
@@ -95,28 +117,6 @@ public class ServicePongHandler implements PongService.Iface {
     return result;	
   }
 
-  public ServicePongHandler() {
-    ballGame = new Ball(new Position(), 0, 0);
-    playerList = new ArrayList<Player>();
-    orientationBall = RIGHT_ORIENTATION;
-    isGameRunning = false;
-  }
-
-  public void InvertBallPosition(){
-    ballGame.getPosition().setX(BALL_INITIAL_POSITION_X);
-    ballGame.getPosition().setY(BALL_INITIAL_POSITION_Y);
-    ballGame.setSpeedOnX(ballGame.getSpeedOnX() * -1);
-    ballGame.setSpeedOnY(ballGame.getSpeedOnY() * -1);
-  }
-
-  public void ResetBallPosition() {
-    ballGame.getPosition().setX(BALL_INITIAL_POSITION_X);
-    ballGame.getPosition().setY(BALL_INITIAL_POSITION_Y);
-    ballGame.setSpeedOnX(BALL_INITIAL_SPEED_X);
-    ballGame.setSpeedOnY(BALL_INITIAL_SPEED_Y);
-
-  }
-
   @Override
   public boolean StartGame() throws TException {
     boolean result;
@@ -153,6 +153,7 @@ public class ServicePongHandler implements PongService.Iface {
     }else{
       position = new Position(700,255);
     }
+
     newPlayer.setPosition(position);
     playerList.add(newPlayer);
 
