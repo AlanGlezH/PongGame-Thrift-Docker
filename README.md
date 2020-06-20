@@ -22,4 +22,4 @@ Pygame necesita ser instalado en la computadora si aún no se tiene, en este cas
 2. sudo apt-get install python-pygame
 
 
-Una vez que se instaló correctamente pygame, solo es necesario ir a la carpeta servidor y ejecutar el archivo main.py para empezar iniciar.
+Una vez que se instaló correctamente pygame, solo es necesario ir a la carpeta servidor y ejecutar el archivo main.py para iniciar.
